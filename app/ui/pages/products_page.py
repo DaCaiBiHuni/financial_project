@@ -65,11 +65,8 @@ class ProductsPage(QWidget):
         self.name_value = QLabel('-')
         self.symbol_value = QLabel('-')
         self.type_value = QLabel('-')
-        self.source_value = QLabel('-')
-        self.currency_value = QLabel('-')
         self.price_value = QLabel('-')
         self.updated_value = QLabel('-')
-        self.note_value = QLabel('-')
 
         detail_layout.addWidget(QLabel('Name'), 0, 0)
         detail_layout.addWidget(self.name_value, 0, 1)
@@ -77,23 +74,15 @@ class ProductsPage(QWidget):
         detail_layout.addWidget(self.symbol_value, 0, 3)
         detail_layout.addWidget(QLabel('Type'), 1, 0)
         detail_layout.addWidget(self.type_value, 1, 1)
-        detail_layout.addWidget(QLabel('Source'), 1, 2)
-        detail_layout.addWidget(self.source_value, 1, 3)
-        detail_layout.addWidget(QLabel('Currency'), 2, 0)
-        detail_layout.addWidget(self.currency_value, 2, 1)
-        detail_layout.addWidget(QLabel('Current Price'), 2, 2)
-        detail_layout.addWidget(self.price_value, 2, 3)
-        detail_layout.addWidget(QLabel('Updated'), 3, 0)
-        detail_layout.addWidget(self.updated_value, 3, 1, 1, 3)
-        detail_layout.addWidget(QLabel('Note'), 4, 0)
-        detail_layout.addWidget(self.note_value, 4, 1, 1, 3)
+        detail_layout.addWidget(QLabel('Current Price'), 1, 2)
+        detail_layout.addWidget(self.price_value, 1, 3)
+        detail_layout.addWidget(QLabel('Updated'), 2, 0)
+        detail_layout.addWidget(self.updated_value, 2, 1, 1, 3)
 
-        self.history_label = QLabel('Trend Preview: no data yet')
         self.status_label = QLabel('')
         self.chart_widget = PriceChartWidget(self)
 
         bottom_layout.addWidget(detail_card)
-        bottom_layout.addWidget(self.history_label)
         bottom_layout.addWidget(self.status_label)
         bottom_layout.addWidget(self.chart_widget)
 
@@ -160,30 +149,18 @@ class ProductsPage(QWidget):
         self.name_value.setText(product.name)
         self.symbol_value.setText(product.symbol)
         self.type_value.setText(product.asset_type)
-        self.source_value.setText(product.source)
-        self.currency_value.setText(product.currency)
         self.price_value.setText(f"{product.current_price:.2f}")
         self.updated_value.setText(product.last_updated)
-        self.note_value.setText(product.note or '-')
 
         history = self.market_service.get_price_history(product_id, limit=12)
-        if history:
-            trend = ' -> '.join(f"{price:.2f}" for price, _ts in history)
-            self.history_label.setText(f"Trend Preview: {trend}")
-        else:
-            self.history_label.setText('Trend Preview: no data yet')
         self.chart_widget.plot_prices(history)
 
     def _clear_detail(self):
         self.name_value.setText('-')
         self.symbol_value.setText('-')
         self.type_value.setText('-')
-        self.source_value.setText('-')
-        self.currency_value.setText('-')
         self.price_value.setText('-')
         self.updated_value.setText('-')
-        self.note_value.setText('-')
-        self.history_label.setText('Trend Preview: no data yet')
         self.chart_widget.plot_prices([])
 
     def open_add_dialog(self):
@@ -197,4 +174,3 @@ class ProductsPage(QWidget):
             self.refresh_table()
             if self.on_data_changed:
                 self.on_data_changed()
-
