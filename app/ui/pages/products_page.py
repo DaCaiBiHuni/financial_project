@@ -12,6 +12,7 @@
 from app.application.services.market_service import MarketService
 from app.application.services.product_service import ProductService
 from app.ui.pages.add_product_dialog import AddProductDialog
+from app.ui.widgets.price_chart_widget import PriceChartWidget
 
 
 class ProductsPage(QWidget):
@@ -41,11 +42,13 @@ class ProductsPage(QWidget):
 
         self.detail_label = QLabel('Product Detail: select a product to view details')
         self.history_label = QLabel('Trend Preview: no data yet')
+        self.chart_widget = PriceChartWidget(self)
 
         layout.addLayout(top_bar)
         layout.addWidget(self.table)
         layout.addWidget(self.detail_label)
         layout.addWidget(self.history_label)
+        layout.addWidget(self.chart_widget)
 
         self.refresh_table()
 
@@ -75,6 +78,7 @@ class ProductsPage(QWidget):
         if not items:
             self.detail_label.setText('Product Detail: select a product to view details')
             self.history_label.setText('Trend Preview: no data yet')
+            self.chart_widget.plot_prices([])
             return
         row = items[0].row()
         product_id = self.table.item(row, 0).data(256)
@@ -90,6 +94,7 @@ class ProductsPage(QWidget):
             self.history_label.setText(f"Trend Preview: {trend}")
         else:
             self.history_label.setText('Trend Preview: no data yet')
+        self.chart_widget.plot_prices(history)
 
     def open_add_dialog(self):
         dialog = AddProductDialog(self)
