@@ -1,6 +1,7 @@
 ﻿from datetime import datetime
 
 from app.application.services.settings_service import SettingsService
+from app.infrastructure.providers.alphavantage_provider import AlphaVantageProvider
 from app.infrastructure.providers.mock_provider import MockMarketProvider
 from app.infrastructure.providers.yahoo_provider import YahooMarketProvider
 from app.infrastructure.db.repositories.product_repository import ProductRepository
@@ -18,6 +19,8 @@ class MarketService:
     def _build_provider(self):
         if self.provider_name == 'yahoo':
             return YahooMarketProvider()
+        if self.provider_name == 'alphavantage':
+            return AlphaVantageProvider()
         return MockMarketProvider()
 
     def reload_provider(self):

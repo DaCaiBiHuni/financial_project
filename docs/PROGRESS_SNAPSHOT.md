@@ -1,7 +1,7 @@
 ﻿# Project Progress Snapshot
 
 ## Current Stage
-Interactive desktop prototype with strict real-data refresh behavior
+Interactive desktop prototype with Alpha Vantage provider option
 
 ## Completed
 - Project repository initialized
@@ -24,21 +24,23 @@ Interactive desktop prototype with strict real-data refresh behavior
 - One-year monthly trend v1 implemented
 - Products layout v1 implemented
 - Strict refresh logic v1 implemented
-  - yahoo failure no longer silently overwrites data with mock
-  - refresh status shows success/failure explicitly
+- Alpha Vantage provider option added
+  - provider skeleton
+  - settings option
+  - market service routing
 
 ## In Progress / Next
-- clear old mock history for symbols already polluted
-- validate yahoo historical data in-app
+- configure ALPHAVANTAGE_API_KEY
+- validate NVDA current price and 1y monthly history via Alpha Vantage
+- add clearer provider-specific error messages
 - add time range switching
 - improve dashboard layout
-- add per-symbol validation states
 
 ## MVP Status Estimate
 - Documentation: 90%
-- Architecture: 89%
+- Architecture: 90%
 - UI skeleton: 87%
 - Core CRUD/data flow: 86%
 - Financial analytics: 60%
-- Market data integration: 72%
-- Overall MVP progress: ~89%
+- Market data integration: 75%
+- Overall MVP progress: ~90%

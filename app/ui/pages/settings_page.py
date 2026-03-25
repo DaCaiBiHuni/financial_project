@@ -13,7 +13,7 @@ class SettingsPage(QWidget):
         layout.addWidget(QLabel('Market Data Provider'))
 
         self.provider_combo = QComboBox()
-        self.provider_combo.addItems(['mock', 'yahoo'])
+        self.provider_combo.addItems(['mock', 'yahoo', 'alphavantage'])
         current = self.service.get_market_provider()
         idx = self.provider_combo.findText(current)
         if idx >= 0:
