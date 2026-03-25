@@ -114,10 +114,14 @@ class ProductsPage(QWidget):
         results = self.market_service.refresh_all_prices()
         self.refresh_table()
         self.show_selected_product_detail()
-        if results:
-            self.status_label.setText(f"Refresh result: {results[-1]['message']}")
-        else:
+        if not results:
             self.status_label.setText('Refresh result: no products to refresh')
+        else:
+            failed = [r for r in results if not r.get('ok')]
+            if failed:
+                self.status_label.setText(f"Refresh failed: {failed[-1]['message']}")
+            else:
+                self.status_label.setText(f"Refresh success: {results[-1]['message']}")
         if self.on_data_changed:
             self.on_data_changed()
 

@@ -1,9 +1,8 @@
-﻿from app.domain.models.product import Product
-from app.infrastructure.db.database import get_connection
+﻿from app.infrastructure.db.database import get_connection
 
 
 class ProductRepository:
-    def add_product(self, product: Product) -> int:
+    def add_product(self, product):
         conn = get_connection()
         cur = conn.cursor()
         cur.execute(
@@ -24,12 +23,13 @@ class ProductRepository:
         conn.close()
         return product_id
 
-    def list_products(self) -> list[Product]:
+    def list_products(self):
         conn = get_connection()
         cur = conn.cursor()
         cur.execute('SELECT id, name, symbol, asset_type, source, currency, current_price, last_updated, note FROM products ORDER BY id DESC')
         rows = cur.fetchall()
         conn.close()
+        from app.domain.models.product import Product
         return [
             Product(
                 id=row[0],
@@ -45,7 +45,7 @@ class ProductRepository:
             for row in rows
         ]
 
-    def get_product(self, product_id: int) -> Product | None:
+    def get_product(self, product_id: int):
         conn = get_connection()
         cur = conn.cursor()
         cur.execute(
@@ -56,6 +56,7 @@ class ProductRepository:
         conn.close()
         if not row:
             return None
+        from app.domain.models.product import Product
         return Product(
             id=row[0],
             name=row[1],

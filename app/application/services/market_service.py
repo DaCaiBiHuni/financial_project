@@ -27,39 +27,50 @@ class MarketService:
     def refresh_product_price(self, product_id: int):
         product = self.repo.get_product(product_id)
         if not product:
-            return {'ok': False, 'message': 'Product not found'}
+            return {'ok': False, 'message': 'Product not found', 'provider': self.provider_name}
 
         now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+        if self.provider_name == 'mock':
+            price = self.provider.get_current_price(product.symbol)
+            history = self.provider.get_yearly_monthly_history(product.symbol)
+            self.repo.update_price(product_id, price, now)
+            self.history_repo.replace_yearly_history(product_id, history)
+            return {
+                'ok': True,
+                'product_id': product_id,
+                'symbol': product.symbol,
+                'price': price,
+                'provider': 'mock',
+                'message': f'{product.symbol} refreshed via mock provider',
+            }
+
         try:
             price = self.provider.get_current_price(product.symbol)
             history = self.provider.get_yearly_monthly_history(product.symbol)
-            provider_used = self.provider_name
-            message = f'{product.symbol} price and 1y monthly trend refreshed via {provider_used}'
+            self.repo.update_price(product_id, price, now)
+            self.history_repo.replace_yearly_history(product_id, history)
+            return {
+                'ok': True,
+                'product_id': product_id,
+                'symbol': product.symbol,
+                'price': price,
+                'provider': self.provider_name,
+                'message': f'{product.symbol} refreshed via {self.provider_name}',
+            }
         except Exception as exc:
-            fallback = MockMarketProvider()
-            price = fallback.get_current_price(product.symbol)
-            history = fallback.get_yearly_monthly_history(product.symbol)
-            provider_used = 'mock-fallback'
-            message = f'{product.symbol} failed on {self.provider_name}, fallback to mock: {exc}'
-
-        self.repo.update_price(product_id, price, now)
-        self.history_repo.replace_yearly_history(product_id, history)
-        return {
-            'ok': True,
-            'product_id': product_id,
-            'symbol': product.symbol,
-            'price': price,
-            'provider': provider_used,
-            'message': message,
-        }
+            return {
+                'ok': False,
+                'product_id': product_id,
+                'symbol': product.symbol,
+                'provider': self.provider_name,
+                'message': f'{product.symbol} refresh failed on {self.provider_name}: {exc}',
+            }
 
     def refresh_all_prices(self):
         self.reload_provider()
         products = self.repo.list_products()
-        results = []
-        for product in products:
-            results.append(self.refresh_product_price(product.id))
-        return results
+        return [self.refresh_product_price(product.id) for product in products]
 
     def get_price_history(self, product_id: int, limit: int = 12):
         return self.history_repo.get_price_history(product_id, limit)

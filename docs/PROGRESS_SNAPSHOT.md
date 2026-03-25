@@ -1,7 +1,7 @@
 ﻿# Project Progress Snapshot
 
 ## Current Stage
-Interactive desktop prototype with product-oriented detail layout
+Interactive desktop prototype with strict real-data refresh behavior
 
 ## Completed
 - Project repository initialized
@@ -23,22 +23,22 @@ Interactive desktop prototype with product-oriented detail layout
 - Provider feedback v1 implemented
 - One-year monthly trend v1 implemented
 - Products layout v1 implemented
-  - product list panel
-  - structured detail card
-  - clearer chart area
+- Strict refresh logic v1 implemented
+  - yahoo failure no longer silently overwrites data with mock
+  - refresh status shows success/failure explicitly
 
 ## In Progress / Next
+- clear old mock history for symbols already polluted
 - validate yahoo historical data in-app
 - add time range switching
 - improve dashboard layout
-- add per-symbol error states
-- UI polish
+- add per-symbol validation states
 
 ## MVP Status Estimate
 - Documentation: 90%
-- Architecture: 88%
+- Architecture: 89%
 - UI skeleton: 87%
-- Core CRUD/data flow: 84%
+- Core CRUD/data flow: 86%
 - Financial analytics: 60%
-- Market data integration: 65%
-- Overall MVP progress: ~88%
+- Market data integration: 72%
+- Overall MVP progress: ~89%
