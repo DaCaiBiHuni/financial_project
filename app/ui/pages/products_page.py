@@ -3,7 +3,6 @@
     QLabel,
     QMessageBox,
     QPushButton,
-    QProgressDialog,
     QSplitter,
     QTableWidget,
     QTableWidgetItem,
@@ -44,7 +43,6 @@ class ProductsPage(QWidget):
         self.service = ProductService()
         self.market_service = MarketService()
         self.on_data_changed = on_data_changed
-        self.loading_dialog = None
         self.refresh_thread = None
         self.refresh_worker = None
         self.refresh_mode = None
@@ -84,12 +82,15 @@ class ProductsPage(QWidget):
         self.product_title = QLabel('No product selected')
         self.product_meta = QLabel('Select a product to view its latest trend')
         self.status_label = QLabel('')
+        self.loading_label = QLabel('')
+        self.loading_label.setAlignment(Qt.AlignRight)
         self.chart_widget = PriceChartWidget(self)
 
         bottom_layout.addWidget(self.product_title)
         bottom_layout.addWidget(self.product_meta)
-        bottom_layout.addWidget(self.status_label)
         bottom_layout.addWidget(self.chart_widget)
+        bottom_layout.addWidget(self.status_label)
+        bottom_layout.addWidget(self.loading_label)
 
         splitter.addWidget(top_container)
         splitter.addWidget(bottom_container)
@@ -100,20 +101,14 @@ class ProductsPage(QWidget):
 
         self.refresh_table()
 
-    def _show_loading(self, text: str):
-        dialog = QProgressDialog(text, None, 0, 0, self)
-        dialog.setWindowTitle('Please wait')
-        dialog.setWindowModality(Qt.ApplicationModal)
-        dialog.setCancelButton(None)
-        dialog.setMinimumDuration(0)
-        dialog.show()
-        return dialog
+    def _set_loading(self, text: str = ''):
+        self.loading_label.setText(text)
 
     def _start_refresh(self, mode: str, loading_text: str):
         if self.refresh_thread is not None:
             return
         self.refresh_mode = mode
-        self.loading_dialog = self._show_loading(loading_text)
+        self._set_loading(loading_text)
         self.refresh_price_button.setEnabled(False)
         self.refresh_trend_button.setEnabled(False)
 
@@ -136,9 +131,7 @@ class ProductsPage(QWidget):
         self.refresh_worker = None
         self.refresh_price_button.setEnabled(True)
         self.refresh_trend_button.setEnabled(True)
-        if self.loading_dialog:
-            self.loading_dialog.close()
-            self.loading_dialog = None
+        self._set_loading('')
 
     def _on_refresh_finished(self, results):
         self.refresh_table()
@@ -172,10 +165,10 @@ class ProductsPage(QWidget):
             self.table.item(row, 0).setData(256, product.id)
 
     def refresh_prices(self):
-        self._start_refresh('price', '正在后台拉取当前价格，请稍候...')
+        self._start_refresh('price', 'Loading price…')
 
     def refresh_trends(self):
-        self._start_refresh('trend', '正在后台拉取最近一年的走势，请稍候...')
+        self._start_refresh('trend', 'Loading 1Y trend…')
 
     def show_selected_product_detail(self):
         items = self.table.selectedItems()
