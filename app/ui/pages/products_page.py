@@ -5,11 +5,13 @@
     QLabel,
     QMessageBox,
     QPushButton,
+    QSplitter,
     QTableWidget,
     QTableWidgetItem,
     QVBoxLayout,
     QWidget,
 )
+from PySide6.QtCore import Qt
 
 from app.application.services.market_service import MarketService
 from app.application.services.product_service import ProductService
@@ -42,18 +44,20 @@ class ProductsPage(QWidget):
         header_layout.addWidget(self.refresh_trend_button)
         header_layout.addWidget(self.add_button)
 
-        content_layout = QHBoxLayout()
+        splitter = QSplitter(Qt.Vertical)
 
-        left_panel = QVBoxLayout()
-        left_panel.addWidget(QLabel('Tracked Products'))
+        top_container = QWidget()
+        top_layout = QVBoxLayout(top_container)
+        top_layout.addWidget(QLabel('Tracked Products'))
         self.table = QTableWidget(0, 5)
         self.table.setHorizontalHeaderLabels(['Name', 'Symbol', 'Type', 'Price', 'Updated'])
         self.table.horizontalHeader().setStretchLastSection(True)
         self.table.itemSelectionChanged.connect(self.show_selected_product_detail)
-        left_panel.addWidget(self.table)
+        top_layout.addWidget(self.table)
 
-        right_panel = QVBoxLayout()
-        right_panel.addWidget(QLabel('Product Detail'))
+        bottom_container = QWidget()
+        bottom_layout = QVBoxLayout(bottom_container)
+        bottom_layout.addWidget(QLabel('Product Detail & Trend'))
 
         detail_card = QFrame()
         detail_card.setFrameShape(QFrame.StyledPanel)
@@ -69,35 +73,36 @@ class ProductsPage(QWidget):
 
         detail_layout.addWidget(QLabel('Name'), 0, 0)
         detail_layout.addWidget(self.name_value, 0, 1)
-        detail_layout.addWidget(QLabel('Symbol'), 1, 0)
-        detail_layout.addWidget(self.symbol_value, 1, 1)
-        detail_layout.addWidget(QLabel('Type'), 2, 0)
-        detail_layout.addWidget(self.type_value, 2, 1)
-        detail_layout.addWidget(QLabel('Source'), 3, 0)
-        detail_layout.addWidget(self.source_value, 3, 1)
-        detail_layout.addWidget(QLabel('Currency'), 4, 0)
-        detail_layout.addWidget(self.currency_value, 4, 1)
-        detail_layout.addWidget(QLabel('Current Price'), 5, 0)
-        detail_layout.addWidget(self.price_value, 5, 1)
-        detail_layout.addWidget(QLabel('Updated'), 6, 0)
-        detail_layout.addWidget(self.updated_value, 6, 1)
-        detail_layout.addWidget(QLabel('Note'), 7, 0)
-        detail_layout.addWidget(self.note_value, 7, 1)
+        detail_layout.addWidget(QLabel('Symbol'), 0, 2)
+        detail_layout.addWidget(self.symbol_value, 0, 3)
+        detail_layout.addWidget(QLabel('Type'), 1, 0)
+        detail_layout.addWidget(self.type_value, 1, 1)
+        detail_layout.addWidget(QLabel('Source'), 1, 2)
+        detail_layout.addWidget(self.source_value, 1, 3)
+        detail_layout.addWidget(QLabel('Currency'), 2, 0)
+        detail_layout.addWidget(self.currency_value, 2, 1)
+        detail_layout.addWidget(QLabel('Current Price'), 2, 2)
+        detail_layout.addWidget(self.price_value, 2, 3)
+        detail_layout.addWidget(QLabel('Updated'), 3, 0)
+        detail_layout.addWidget(self.updated_value, 3, 1, 1, 3)
+        detail_layout.addWidget(QLabel('Note'), 4, 0)
+        detail_layout.addWidget(self.note_value, 4, 1, 1, 3)
 
         self.history_label = QLabel('Trend Preview: no data yet')
         self.status_label = QLabel('')
         self.chart_widget = PriceChartWidget(self)
 
-        right_panel.addWidget(detail_card)
-        right_panel.addWidget(self.history_label)
-        right_panel.addWidget(self.status_label)
-        right_panel.addWidget(self.chart_widget)
+        bottom_layout.addWidget(detail_card)
+        bottom_layout.addWidget(self.history_label)
+        bottom_layout.addWidget(self.status_label)
+        bottom_layout.addWidget(self.chart_widget)
 
-        content_layout.addLayout(left_panel, 5)
-        content_layout.addLayout(right_panel, 4)
+        splitter.addWidget(top_container)
+        splitter.addWidget(bottom_container)
+        splitter.setSizes([320, 420])
 
         root_layout.addLayout(header_layout)
-        root_layout.addLayout(content_layout)
+        root_layout.addWidget(splitter)
 
         self.refresh_table()
 
