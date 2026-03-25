@@ -1,5 +1,4 @@
 ﻿from PySide6.QtWidgets import (
-    QFrame,
     QHBoxLayout,
     QLabel,
     QMessageBox,
@@ -48,32 +47,28 @@ class ProductsPage(QWidget):
         top_container = QWidget()
         top_layout = QVBoxLayout(top_container)
         top_layout.addWidget(QLabel('Tracked Products'))
-        self.table = QTableWidget(0, 5)
-        self.table.setHorizontalHeaderLabels(['Name', 'Symbol', 'Type', 'Price', 'Updated'])
+        self.table = QTableWidget(0, 4)
+        self.table.setHorizontalHeaderLabels(['Name', 'Symbol', 'Price', 'Updated'])
         self.table.horizontalHeader().setStretchLastSection(True)
         self.table.itemSelectionChanged.connect(self.show_selected_product_detail)
         top_layout.addWidget(self.table)
 
         bottom_container = QWidget()
         bottom_layout = QVBoxLayout(bottom_container)
-        bottom_layout.addWidget(QLabel('Product Detail & Trend'))
 
-        summary_bar = QFrame()
-        summary_bar.setFrameShape(QFrame.StyledPanel)
-        summary_layout = QHBoxLayout(summary_bar)
-        self.summary_label = QLabel('No product selected')
-        summary_layout.addWidget(self.summary_label)
-
+        self.product_title = QLabel('No product selected')
+        self.product_meta = QLabel('Select a product to view its latest trend')
         self.status_label = QLabel('')
         self.chart_widget = PriceChartWidget(self)
 
-        bottom_layout.addWidget(summary_bar)
+        bottom_layout.addWidget(self.product_title)
+        bottom_layout.addWidget(self.product_meta)
         bottom_layout.addWidget(self.status_label)
         bottom_layout.addWidget(self.chart_widget)
 
         splitter.addWidget(top_container)
         splitter.addWidget(bottom_container)
-        splitter.setSizes([240, 540])
+        splitter.setSizes([220, 560])
 
         root_layout.addLayout(header_layout)
         root_layout.addWidget(splitter)
@@ -87,9 +82,8 @@ class ProductsPage(QWidget):
         for row, product in enumerate(products):
             self.table.setItem(row, 0, QTableWidgetItem(product.name))
             self.table.setItem(row, 1, QTableWidgetItem(product.symbol))
-            self.table.setItem(row, 2, QTableWidgetItem(product.asset_type))
-            self.table.setItem(row, 3, QTableWidgetItem(f"{product.current_price:.2f}"))
-            self.table.setItem(row, 4, QTableWidgetItem(product.last_updated))
+            self.table.setItem(row, 2, QTableWidgetItem(f"{product.current_price:.2f}"))
+            self.table.setItem(row, 3, QTableWidgetItem(product.last_updated))
             self.table.item(row, 0).setData(256, product.id)
 
     def refresh_prices(self):
@@ -131,15 +125,17 @@ class ProductsPage(QWidget):
             self._clear_detail()
             return
 
-        self.summary_label.setText(
-            f"{product.name} | {product.symbol} | {product.asset_type} | Price: {product.current_price:.2f} {product.currency} | Updated: {product.last_updated or '-'}"
+        self.product_title.setText(f"{product.name} ({product.symbol})")
+        self.product_meta.setText(
+            f"{product.asset_type} · {product.currency} · Current Price: {product.current_price:.2f} · Updated: {product.last_updated or '-'}"
         )
 
         history = self.market_service.get_price_history(product_id, limit=12)
         self.chart_widget.plot_prices(history)
 
     def _clear_detail(self):
-        self.summary_label.setText('No product selected')
+        self.product_title.setText('No product selected')
+        self.product_meta.setText('Select a product to view its latest trend')
         self.chart_widget.plot_prices([])
 
     def open_add_dialog(self):
