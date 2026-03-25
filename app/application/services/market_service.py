@@ -1,4 +1,6 @@
-﻿from datetime import datetime
+﻿import os
+import time
+from datetime import datetime
 
 from app.application.services.settings_service import SettingsService
 from app.infrastructure.providers.alphavantage_provider import AlphaVantageProvider
@@ -57,24 +59,34 @@ class MarketService:
         product = self.repo.get_product(product_id)
         if not product:
             return {'ok': False, 'message': 'Product not found', 'provider': self.provider_name}
-        try:
-            history = self.provider.get_yearly_monthly_history(product.symbol)
-            self.history_repo.replace_yearly_history(product_id, history)
-            return {
-                'ok': True,
-                'product_id': product_id,
-                'symbol': product.symbol,
-                'provider': self.provider_name,
-                'message': f'{product.symbol} 1y monthly trend refreshed via {self.provider_name}',
-            }
-        except Exception as exc:
-            return {
-                'ok': False,
-                'product_id': product_id,
-                'symbol': product.symbol,
-                'provider': self.provider_name,
-                'message': f'{product.symbol} trend refresh failed on {self.provider_name}: {exc}',
-            }
+
+        attempts = 3 if self.provider_name == 'alphavantage' else 1
+        delay_seconds = 2 if self.provider_name == 'alphavantage' else 0
+        last_error = None
+
+        for attempt in range(1, attempts + 1):
+            try:
+                if delay_seconds and attempt > 1:
+                    time.sleep(delay_seconds)
+                history = self.provider.get_yearly_monthly_history(product.symbol)
+                self.history_repo.replace_yearly_history(product_id, history)
+                return {
+                    'ok': True,
+                    'product_id': product_id,
+                    'symbol': product.symbol,
+                    'provider': self.provider_name,
+                    'message': f'{product.symbol} 1y monthly trend refreshed via {self.provider_name} (attempt {attempt})',
+                }
+            except Exception as exc:
+                last_error = exc
+
+        return {
+            'ok': False,
+            'product_id': product_id,
+            'symbol': product.symbol,
+            'provider': self.provider_name,
+            'message': f'{product.symbol} trend refresh failed on {self.provider_name} after {attempts} attempts: {last_error}',
+        }
 
     def refresh_all_prices(self):
         self.reload_provider()

@@ -168,7 +168,11 @@ class ProductsPage(QWidget):
         self._start_refresh('price', 'Loading price…')
 
     def refresh_trends(self):
-        self._start_refresh('trend', 'Loading 1Y trend…')
+        provider = self.market_service.get_provider_name()
+        text = 'Loading 1Y trend…'
+        if provider == 'alphavantage':
+            text = 'Loading 1Y trend… (with retry)'
+        self._start_refresh('trend', text)
 
     def show_selected_product_detail(self):
         items = self.table.selectedItems()
