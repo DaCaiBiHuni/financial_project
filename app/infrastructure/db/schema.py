@@ -17,5 +17,16 @@ def init_database():
         )
         '''
     )
+    cur.execute(
+        '''
+        CREATE TABLE IF NOT EXISTS portfolio_positions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            product_id INTEGER NOT NULL,
+            quantity REAL NOT NULL,
+            average_cost REAL NOT NULL,
+            FOREIGN KEY(product_id) REFERENCES products(id)
+        )
+        '''
+    )
     conn.commit()
     conn.close()
