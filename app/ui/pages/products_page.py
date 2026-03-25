@@ -14,9 +14,10 @@ from app.ui.pages.add_product_dialog import AddProductDialog
 
 
 class ProductsPage(QWidget):
-    def __init__(self):
+    def __init__(self, on_data_changed=None):
         super().__init__()
         self.service = ProductService()
+        self.on_data_changed = on_data_changed
 
         layout = QVBoxLayout(self)
 
@@ -57,3 +58,5 @@ class ProductsPage(QWidget):
                 return
             self.service.create_product(**data)
             self.refresh_table()
+            if self.on_data_changed:
+                self.on_data_changed()

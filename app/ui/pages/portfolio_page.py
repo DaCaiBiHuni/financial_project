@@ -15,10 +15,11 @@ from app.ui.pages.add_position_dialog import AddPositionDialog
 
 
 class PortfolioPage(QWidget):
-    def __init__(self):
+    def __init__(self, on_data_changed=None):
         super().__init__()
         self.portfolio_service = PortfolioService()
         self.product_service = ProductService()
+        self.on_data_changed = on_data_changed
 
         layout = QVBoxLayout(self)
 
@@ -65,3 +66,5 @@ class PortfolioPage(QWidget):
                 return
             self.portfolio_service.create_position(**data)
             self.refresh_table()
+            if self.on_data_changed:
+                self.on_data_changed()
