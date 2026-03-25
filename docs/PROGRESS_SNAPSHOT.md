@@ -1,7 +1,7 @@
 ﻿# Project Progress Snapshot
 
 ## Current Stage
-Interactive desktop prototype with provider status and refresh feedback
+Interactive desktop prototype with one-year monthly trend support
 
 ## Completed
 - Project repository initialized
@@ -21,22 +21,23 @@ Interactive desktop prototype with provider status and refresh feedback
 - Real data provider architecture v1 implemented
 - Settings-driven provider configuration v1 implemented
 - Provider feedback v1 implemented
-  - current provider shown in UI
-  - refresh result message shown in products page
-  - fallback behavior surfaced in status text
+- One-year monthly trend v1 implemented
+  - yearly monthly history fetch
+  - replace local history with 12-month monthly data
+  - chart updated to show last 12 months
 
 ## In Progress / Next
-- validate yahoo symbols in-app
-- show clearer error states per product
-- add time range filtering
+- validate yahoo historical data in-app
+- add time range switching
 - richer product detail layout
 - dashboard charts
+- per-symbol validation and error display
 
 ## MVP Status Estimate
 - Documentation: 90%
-- Architecture: 86%
-- UI skeleton: 82%
-- Core CRUD/data flow: 82%
+- Architecture: 88%
+- UI skeleton: 83%
+- Core CRUD/data flow: 84%
 - Financial analytics: 60%
-- Market data integration: 58%
-- Overall MVP progress: ~82%
+- Market data integration: 65%
+- Overall MVP progress: ~85%

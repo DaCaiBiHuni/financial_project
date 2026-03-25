@@ -32,16 +32,18 @@ class MarketService:
         now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         try:
             price = self.provider.get_current_price(product.symbol)
+            history = self.provider.get_yearly_monthly_history(product.symbol)
             provider_used = self.provider_name
-            message = f'{product.symbol} price refreshed via {provider_used}'
+            message = f'{product.symbol} price and 1y monthly trend refreshed via {provider_used}'
         except Exception as exc:
             fallback = MockMarketProvider()
             price = fallback.get_current_price(product.symbol)
+            history = fallback.get_yearly_monthly_history(product.symbol)
             provider_used = 'mock-fallback'
             message = f'{product.symbol} failed on {self.provider_name}, fallback to mock: {exc}'
 
         self.repo.update_price(product_id, price, now)
-        self.history_repo.add_price_point(product_id, price, now)
+        self.history_repo.replace_yearly_history(product_id, history)
         return {
             'ok': True,
             'product_id': product_id,
@@ -59,7 +61,7 @@ class MarketService:
             results.append(self.refresh_product_price(product.id))
         return results
 
-    def get_price_history(self, product_id: int, limit: int = 20):
+    def get_price_history(self, product_id: int, limit: int = 12):
         return self.history_repo.get_price_history(product_id, limit)
 
     def get_provider_name(self):
