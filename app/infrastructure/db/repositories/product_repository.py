@@ -1,6 +1,4 @@
-﻿from datetime import datetime
-
-from app.domain.models.product import Product
+﻿from app.domain.models.product import Product
 from app.infrastructure.db.database import get_connection
 
 
@@ -69,3 +67,13 @@ class ProductRepository:
             last_updated=row[7] or '',
             note=row[8] or '',
         )
+
+    def update_price(self, product_id: int, price: float, updated_at: str):
+        conn = get_connection()
+        cur = conn.cursor()
+        cur.execute(
+            'UPDATE products SET current_price = ?, last_updated = ? WHERE id = ?',
+            (price, updated_at, product_id),
+        )
+        conn.commit()
+        conn.close()

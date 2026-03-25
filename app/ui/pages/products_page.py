@@ -9,6 +9,7 @@
     QWidget,
 )
 
+from app.application.services.market_service import MarketService
 from app.application.services.product_service import ProductService
 from app.ui.pages.add_product_dialog import AddProductDialog
 
@@ -17,6 +18,7 @@ class ProductsPage(QWidget):
     def __init__(self, on_data_changed=None):
         super().__init__()
         self.service = ProductService()
+        self.market_service = MarketService()
         self.on_data_changed = on_data_changed
 
         layout = QVBoxLayout(self)
@@ -25,8 +27,11 @@ class ProductsPage(QWidget):
         title = QLabel('Products')
         self.add_button = QPushButton('Add Product')
         self.add_button.clicked.connect(self.open_add_dialog)
+        self.refresh_button = QPushButton('Refresh Prices')
+        self.refresh_button.clicked.connect(self.refresh_prices)
         top_bar.addWidget(title)
         top_bar.addStretch()
+        top_bar.addWidget(self.refresh_button)
         top_bar.addWidget(self.add_button)
 
         self.table = QTableWidget(0, 8)
@@ -55,6 +60,12 @@ class ProductsPage(QWidget):
             self.table.setItem(row, 6, QTableWidgetItem(product.last_updated))
             self.table.setItem(row, 7, QTableWidgetItem(product.note))
             self.table.item(row, 0).setData(256, product.id)
+
+    def refresh_prices(self):
+        self.market_service.refresh_all_prices()
+        self.refresh_table()
+        if self.on_data_changed:
+            self.on_data_changed()
 
     def show_selected_product_detail(self):
         items = self.table.selectedItems()
