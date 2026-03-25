@@ -17,6 +17,7 @@ class DashboardPage(QWidget):
         self.total_cost_label = QLabel()
         self.total_market_value_label = QLabel()
         self.total_profit_loss_label = QLabel()
+        self.total_profit_loss_rate_label = QLabel()
 
         grid = QGridLayout()
         grid.addWidget(QLabel('Tracked Products'), 0, 0)
@@ -29,6 +30,8 @@ class DashboardPage(QWidget):
         grid.addWidget(self.total_market_value_label, 3, 1)
         grid.addWidget(QLabel('Profit / Loss'), 4, 0)
         grid.addWidget(self.total_profit_loss_label, 4, 1)
+        grid.addWidget(QLabel('Profit / Loss %'), 5, 0)
+        grid.addWidget(self.total_profit_loss_rate_label, 5, 1)
 
         layout.addWidget(title)
         layout.addWidget(subtitle)
@@ -44,3 +47,4 @@ class DashboardPage(QWidget):
         self.total_cost_label.setText(f"{summary['total_cost']:.2f}")
         self.total_market_value_label.setText(f"{summary['total_market_value']:.2f}")
         self.total_profit_loss_label.setText(f"{summary['total_profit_loss']:.2f}")
+        self.total_profit_loss_rate_label.setText(f"{summary['total_profit_loss_rate']:.2f}%")

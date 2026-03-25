@@ -31,8 +31,10 @@ class PortfolioPage(QWidget):
         top_bar.addStretch()
         top_bar.addWidget(self.add_button)
 
-        self.table = QTableWidget(0, 3)
-        self.table.setHorizontalHeaderLabels(['Product', 'Quantity', 'Average Cost'])
+        self.table = QTableWidget(0, 7)
+        self.table.setHorizontalHeaderLabels([
+            'Product', 'Quantity', 'Avg Cost', 'Current Price', 'Market Value', 'P/L', 'P/L %'
+        ])
         self.table.horizontalHeader().setStretchLastSection(True)
 
         layout.addLayout(top_bar)
@@ -44,13 +46,21 @@ class PortfolioPage(QWidget):
         positions = self.portfolio_service.get_all_positions()
         summary = self.portfolio_service.get_portfolio_summary()
         self.summary_label.setText(
-            f"Portfolio Summary | Positions: {summary['position_count']} | Total Cost: {summary['total_cost']:.2f}"
+            'Portfolio Summary | '
+            f"Positions: {summary['position_count']} | "
+            f"Cost: {summary['total_cost']:.2f} | "
+            f"Value: {summary['total_market_value']:.2f} | "
+            f"P/L: {summary['total_profit_loss']:.2f} ({summary['total_profit_loss_rate']:.2f}%)"
         )
         self.table.setRowCount(len(positions))
         for row, position in enumerate(positions):
             self.table.setItem(row, 0, QTableWidgetItem(position.product_name))
             self.table.setItem(row, 1, QTableWidgetItem(str(position.quantity)))
-            self.table.setItem(row, 2, QTableWidgetItem(str(position.average_cost)))
+            self.table.setItem(row, 2, QTableWidgetItem(f"{position.average_cost:.2f}"))
+            self.table.setItem(row, 3, QTableWidgetItem(f"{position.current_price:.2f}"))
+            self.table.setItem(row, 4, QTableWidgetItem(f"{position.market_value:.2f}"))
+            self.table.setItem(row, 5, QTableWidgetItem(f"{position.profit_loss:.2f}"))
+            self.table.setItem(row, 6, QTableWidgetItem(f"{position.profit_loss_rate:.2f}%"))
 
     def open_add_dialog(self):
         products = self.product_service.get_all_products()

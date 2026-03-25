@@ -20,7 +20,7 @@ class PositionRepository:
         cur = conn.cursor()
         cur.execute(
             '''
-            SELECT p.id, p.product_id, pr.name, p.quantity, p.average_cost
+            SELECT p.id, p.product_id, pr.name, p.quantity, p.average_cost, pr.current_price
             FROM portfolio_positions p
             JOIN products pr ON p.product_id = pr.id
             ORDER BY p.id DESC
@@ -28,13 +28,26 @@ class PositionRepository:
         )
         rows = cur.fetchall()
         conn.close()
-        return [
-            Position(
-                id=row[0],
-                product_id=row[1],
-                product_name=row[2],
-                quantity=row[3],
-                average_cost=row[4],
+        positions = []
+        for row in rows:
+            quantity = row[3]
+            average_cost = row[4]
+            current_price = row[5] or 0.0
+            market_value = quantity * current_price
+            total_cost = quantity * average_cost
+            profit_loss = market_value - total_cost
+            profit_loss_rate = (profit_loss / total_cost * 100) if total_cost else 0.0
+            positions.append(
+                Position(
+                    id=row[0],
+                    product_id=row[1],
+                    product_name=row[2],
+                    quantity=quantity,
+                    average_cost=average_cost,
+                    current_price=current_price,
+                    market_value=market_value,
+                    profit_loss=profit_loss,
+                    profit_loss_rate=profit_loss_rate,
+                )
             )
-            for row in rows
-        ]
+        return positions

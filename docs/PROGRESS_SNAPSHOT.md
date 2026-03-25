@@ -1,7 +1,7 @@
 ﻿# Project Progress Snapshot
 
 ## Current Stage
-Early interactive desktop prototype with local market-price simulation
+Interactive desktop prototype with local portfolio analytics
 
 ## Completed
 - Project repository initialized
@@ -11,39 +11,29 @@ Early interactive desktop prototype with local market-price simulation
 - Desktop application scaffold created
 - SQLite database connection initialized
 - Products module v1 implemented
-  - add product
-  - list products
-  - local persistence
 - Portfolio module v1 implemented
-  - add position
-  - list positions
-  - total cost summary
 - Dashboard module v1 implemented
-  - tracked product count
-  - portfolio position count
-  - total cost
 - Products detail & price structure v1 implemented
-  - current_price field
-  - last_updated field
-  - basic detail display
-- Market data integration v1 implemented
-  - provider abstraction
-  - mock price provider
-  - refresh prices action
-  - dashboard market value / P&L based on current price
+- Market data integration v1 implemented with mock provider
+- Portfolio analytics v1 implemented
+  - current price
+  - market value
+  - profit/loss
+  - profit/loss rate
+  - dashboard summary linked to portfolio analytics
 
 ## In Progress / Next
 - real market data provider
 - price history storage
 - richer product detail view
-- portfolio table market value and P&L columns
 - chart integration
+- product detail page / panel enhancement
 
 ## MVP Status Estimate
 - Documentation: 90%
-- Architecture: 75%
-- UI skeleton: 70%
-- Core CRUD/data flow: 65%
-- Financial analytics: 35%
+- Architecture: 78%
+- UI skeleton: 72%
+- Core CRUD/data flow: 72%
+- Financial analytics: 50%
 - Market data integration: 25%
-- Overall MVP progress: ~55%
+- Overall MVP progress: ~62%
