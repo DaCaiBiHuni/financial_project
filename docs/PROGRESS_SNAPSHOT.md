@@ -1,7 +1,7 @@
 ﻿# Project Progress Snapshot
 
 ## Current Stage
-Interactive desktop prototype with recommended product entry flow
+Interactive desktop prototype with card-based dashboard layout
 
 ## Completed
 - Project repository initialized
@@ -27,21 +27,23 @@ Interactive desktop prototype with recommended product entry flow
 - Alpha Vantage provider option added
 - Split refresh actions v1 implemented
 - Recommended product entries v1 implemented
-  - quick add buttons in Add Product dialog
-  - duplicate prevention by symbol
+- Dashboard layout v1 implemented
+  - summary cards
+  - clearer metric hierarchy
 
 ## In Progress / Next
 - validate Alpha Vantage current price in-app
 - validate Alpha Vantage monthly history with throttling
 - add time range switching
-- improve dashboard layout
+- add dashboard charts
 - add per-symbol validation states
+- UI polish
 
 ## MVP Status Estimate
 - Documentation: 90%
 - Architecture: 90%
-- UI skeleton: 89%
+- UI skeleton: 92%
 - Core CRUD/data flow: 90%
 - Financial analytics: 60%
 - Market data integration: 80%
-- Overall MVP progress: ~93%
+- Overall MVP progress: ~94%
