@@ -40,10 +40,12 @@ class ProductsPage(QWidget):
         self.table.itemSelectionChanged.connect(self.show_selected_product_detail)
 
         self.detail_label = QLabel('Product Detail: select a product to view details')
+        self.history_label = QLabel('Trend Preview: no data yet')
 
         layout.addLayout(top_bar)
         layout.addWidget(self.table)
         layout.addWidget(self.detail_label)
+        layout.addWidget(self.history_label)
 
         self.refresh_table()
 
@@ -64,6 +66,7 @@ class ProductsPage(QWidget):
     def refresh_prices(self):
         self.market_service.refresh_all_prices()
         self.refresh_table()
+        self.show_selected_product_detail()
         if self.on_data_changed:
             self.on_data_changed()
 
@@ -71,6 +74,7 @@ class ProductsPage(QWidget):
         items = self.table.selectedItems()
         if not items:
             self.detail_label.setText('Product Detail: select a product to view details')
+            self.history_label.setText('Trend Preview: no data yet')
             return
         row = items[0].row()
         product_id = self.table.item(row, 0).data(256)
@@ -80,6 +84,12 @@ class ProductsPage(QWidget):
         self.detail_label.setText(
             f"Product Detail | Name: {product.name} | Symbol: {product.symbol} | Type: {product.asset_type} | Price: {product.current_price:.2f} {product.currency} | Updated: {product.last_updated}"
         )
+        history = self.market_service.get_price_history(product_id, limit=8)
+        if history:
+            trend = ' -> '.join(f"{price:.2f}" for price, _ts in history)
+            self.history_label.setText(f"Trend Preview: {trend}")
+        else:
+            self.history_label.setText('Trend Preview: no data yet')
 
     def open_add_dialog(self):
         dialog = AddProductDialog(self)

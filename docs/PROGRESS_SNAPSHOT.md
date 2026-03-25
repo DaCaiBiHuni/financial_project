@@ -1,7 +1,7 @@
 ﻿# Project Progress Snapshot
 
 ## Current Stage
-Interactive desktop prototype with local portfolio analytics
+Interactive desktop prototype with price history storage and trend preview
 
 ## Completed
 - Project repository initialized
@@ -16,24 +16,23 @@ Interactive desktop prototype with local portfolio analytics
 - Products detail & price structure v1 implemented
 - Market data integration v1 implemented with mock provider
 - Portfolio analytics v1 implemented
-  - current price
-  - market value
-  - profit/loss
-  - profit/loss rate
-  - dashboard summary linked to portfolio analytics
+- Price history & trend preview v1 implemented
+  - price_history table
+  - save price points on refresh
+  - trend preview in products page
 
 ## In Progress / Next
 - real market data provider
-- price history storage
-- richer product detail view
-- chart integration
-- product detail page / panel enhancement
+- proper chart widget
+- richer product detail panel
+- time range filtering
+- price history based dashboard trends
 
 ## MVP Status Estimate
 - Documentation: 90%
-- Architecture: 78%
-- UI skeleton: 72%
-- Core CRUD/data flow: 72%
-- Financial analytics: 50%
-- Market data integration: 25%
-- Overall MVP progress: ~62%
+- Architecture: 80%
+- UI skeleton: 74%
+- Core CRUD/data flow: 75%
+- Financial analytics: 55%
+- Market data integration: 32%
+- Overall MVP progress: ~68%

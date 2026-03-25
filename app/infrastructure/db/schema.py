@@ -1,5 +1,4 @@
-﻿from datetime import datetime
-from app.infrastructure.db.database import get_connection
+﻿from app.infrastructure.db.database import get_connection
 
 
 def init_database():
@@ -38,5 +37,18 @@ def init_database():
         )
         '''
     )
+
+    cur.execute(
+        '''
+        CREATE TABLE IF NOT EXISTS price_history (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            product_id INTEGER NOT NULL,
+            price REAL NOT NULL,
+            recorded_at TEXT NOT NULL,
+            FOREIGN KEY(product_id) REFERENCES products(id)
+        )
+        '''
+    )
+
     conn.commit()
     conn.close()
