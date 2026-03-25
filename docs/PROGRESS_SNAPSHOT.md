@@ -1,50 +1,118 @@
 ﻿# Project Progress Snapshot
 
-## Current Stage
-Interactive desktop prototype with vertically segmented products layout
+---
 
-## Completed
-- Project repository initialized
-- PRD document added
-- Technical design document added
-- Implementation plan added
-- Desktop application scaffold created
-- SQLite database connection initialized
-- Products module v1 implemented
-- Portfolio module v1 implemented
-- Dashboard module v1 implemented
-- Products detail & price structure v1 implemented
-- Market data integration v1 implemented with mock provider
-- Portfolio analytics v1 implemented
-- Price history & trend preview v1 implemented
-- Trend chart v1 implemented
-- Real data provider architecture v1 implemented
-- Settings-driven provider configuration v1 implemented
-- Provider feedback v1 implemented
-- One-year monthly trend v1 implemented
-- Products layout v1 implemented
-- Strict refresh logic v1 implemented
-- Alpha Vantage provider option added
-- Split refresh actions v1 implemented
-- Recommended product entries v1 implemented
-- Dashboard layout v1 implemented
-- Products vertical layout v1 implemented
-  - top section for product entries
-  - bottom section for detail and chart
+## 1. Current Stage
 
-## In Progress / Next
-- validate Alpha Vantage current price in-app
-- validate Alpha Vantage monthly history with throttling
-- add time range switching
-- add dashboard charts
-- add per-symbol validation states
-- UI polish
+The project is currently in a **high-completion desktop MVP prototype stage**.
 
-## MVP Status Estimate
-- Documentation: 90%
-- Architecture: 90%
-- UI skeleton: 93%
-- Core CRUD/data flow: 90%
-- Financial analytics: 60%
-- Market data integration: 80%
-- Overall MVP progress: ~95%
+It already contains the core application structure, portfolio logic, price refresh flow, trend history support, and a readable product-focused interface.
+
+---
+
+## 2. What Has Been Completed
+
+### Documentation
+- PRD
+- technical design
+- implementation plan
+- positioning and differentiation
+- documentation index
+- rolling progress tracking
+
+### Desktop Application Foundation
+- desktop app scaffold
+- page structure
+- SQLite database initialization
+- modular UI organization
+
+### Product Management
+- add product manually
+- recommended product quick-add
+- product list
+- product detail summary
+
+### Portfolio Management
+- add positions
+- track quantity and average cost
+- calculate market value
+- calculate profit/loss
+- calculate profit/loss rate
+
+### Dashboard
+- summary card layout
+- total cost
+- total market value
+- total profit/loss
+- total profit/loss rate
+
+### Market Data & Trend
+- provider abstraction
+- mock provider
+- Yahoo provider skeleton
+- Alpha Vantage provider option
+- current price refresh
+- one-year monthly trend refresh
+- local price history storage
+- trend chart rendering
+- strict real-data refresh behavior
+- split refresh actions for price vs trend
+- async refresh handling
+- lightweight loading feedback in UI
+
+---
+
+## 3. Current Product Capabilities
+
+Right now the prototype can:
+
+1. track selected products,
+2. quick-add recommended products,
+3. manage portfolio positions,
+4. calculate portfolio metrics,
+5. display dashboard summary cards,
+6. refresh current prices,
+7. refresh one-year monthly trend history,
+8. render product trend charts,
+9. switch provider through settings,
+10. report refresh status in the UI.
+
+---
+
+## 4. Current Gaps / Risks
+
+### Real Data Reliability
+- Yahoo is rate-limited in the current environment.
+- Alpha Vantage works for current price in some cases, but historical requests still require validation and throttling awareness.
+
+### Product Experience
+- dashboard can still become more visual,
+- chart time range switching is not yet implemented,
+- provider-specific validation states can still be improved,
+- packaging and executable delivery still need finalization.
+
+---
+
+## 5. MVP Progress Estimate
+
+- Documentation: **92%**
+- Architecture: **90%**
+- UI skeleton: **93%**
+- Core CRUD / data flow: **90%**
+- Financial analytics: **60%**
+- Market data integration: **80%**
+
+### Overall MVP Progress
+## **~94%**
+
+---
+
+## 6. Recommended Next Steps
+
+The most valuable next steps are:
+
+1. validate Alpha Vantage data behavior inside the app,
+2. improve provider-specific error handling,
+3. add chart time range switching,
+4. improve dashboard visualizations,
+5. package the prototype as an executable for direct testing.
