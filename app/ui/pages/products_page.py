@@ -3,6 +3,7 @@
     QLabel,
     QMessageBox,
     QPushButton,
+    QProgressDialog,
     QSplitter,
     QTableWidget,
     QTableWidgetItem,
@@ -75,6 +76,15 @@ class ProductsPage(QWidget):
 
         self.refresh_table()
 
+    def _show_loading(self, text: str):
+        dialog = QProgressDialog(text, None, 0, 0, self)
+        dialog.setWindowTitle('Please wait')
+        dialog.setWindowModality(Qt.ApplicationModal)
+        dialog.setCancelButton(None)
+        dialog.setMinimumDuration(0)
+        dialog.show()
+        return dialog
+
     def refresh_table(self):
         self.provider_label.setText(f"Provider: {self.market_service.get_provider_name()}")
         products = self.service.get_all_products()
@@ -87,7 +97,11 @@ class ProductsPage(QWidget):
             self.table.item(row, 0).setData(256, product.id)
 
     def refresh_prices(self):
-        results = self.market_service.refresh_all_prices()
+        loading = self._show_loading('正在拉取当前价格，请稍候...')
+        try:
+            results = self.market_service.refresh_all_prices()
+        finally:
+            loading.close()
         self.refresh_table()
         self.show_selected_product_detail()
         if not results:
@@ -102,7 +116,11 @@ class ProductsPage(QWidget):
             self.on_data_changed()
 
     def refresh_trends(self):
-        results = self.market_service.refresh_all_histories()
+        loading = self._show_loading('正在拉取最近一年的走势，请稍候...')
+        try:
+            results = self.market_service.refresh_all_histories()
+        finally:
+            loading.close()
         self.show_selected_product_detail()
         if not results:
             self.status_label.setText('Trend refresh: no products to refresh')
