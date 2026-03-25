@@ -1,7 +1,7 @@
 ﻿# Project Progress Snapshot
 
 ## Current Stage
-Interactive desktop prototype with basic trend chart rendering
+Interactive desktop prototype with switchable market provider architecture
 
 ## Completed
 - Project repository initialized
@@ -18,21 +18,24 @@ Interactive desktop prototype with basic trend chart rendering
 - Portfolio analytics v1 implemented
 - Price history & trend preview v1 implemented
 - Trend chart v1 implemented
-  - matplotlib chart widget
-  - product price history line chart
+- Real data provider architecture v1 implemented
+  - provider configuration
+  - Yahoo provider skeleton
+  - provider switching
+  - fallback to mock provider on failure
 
 ## In Progress / Next
-- real market data provider
-- richer product detail layout
-- dashboard chart support
-- time range filtering
-- better UX polish
+- validate real Yahoo symbols and response handling in UI
+- add provider selection to settings page
+- improve error state display
+- add time range filtering
+- improve product detail layout
 
 ## MVP Status Estimate
 - Documentation: 90%
-- Architecture: 80%
+- Architecture: 84%
 - UI skeleton: 78%
-- Core CRUD/data flow: 76%
-- Financial analytics: 58%
-- Market data integration: 35%
-- Overall MVP progress: ~72%
+- Core CRUD/data flow: 78%
+- Financial analytics: 60%
+- Market data integration: 45%
+- Overall MVP progress: ~76%
