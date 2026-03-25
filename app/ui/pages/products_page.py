@@ -1,4 +1,6 @@
 ﻿from PySide6.QtWidgets import (
+    QFrame,
+    QGridLayout,
     QHBoxLayout,
     QLabel,
     QMessageBox,
@@ -22,37 +24,77 @@ class ProductsPage(QWidget):
         self.market_service = MarketService()
         self.on_data_changed = on_data_changed
 
-        layout = QVBoxLayout(self)
+        root_layout = QVBoxLayout(self)
 
-        top_bar = QHBoxLayout()
+        header_layout = QHBoxLayout()
         title = QLabel('Products')
         self.provider_label = QLabel(f"Provider: {self.market_service.get_provider_name()}")
-        self.add_button = QPushButton('Add Product')
-        self.add_button.clicked.connect(self.open_add_dialog)
         self.refresh_button = QPushButton('Refresh Prices')
         self.refresh_button.clicked.connect(self.refresh_prices)
-        top_bar.addWidget(title)
-        top_bar.addWidget(self.provider_label)
-        top_bar.addStretch()
-        top_bar.addWidget(self.refresh_button)
-        top_bar.addWidget(self.add_button)
+        self.add_button = QPushButton('Add Product')
+        self.add_button.clicked.connect(self.open_add_dialog)
+        header_layout.addWidget(title)
+        header_layout.addWidget(self.provider_label)
+        header_layout.addStretch()
+        header_layout.addWidget(self.refresh_button)
+        header_layout.addWidget(self.add_button)
 
-        self.table = QTableWidget(0, 8)
-        self.table.setHorizontalHeaderLabels(['Name', 'Symbol', 'Type', 'Source', 'Currency', 'Price', 'Updated', 'Note'])
+        content_layout = QHBoxLayout()
+
+        left_panel = QVBoxLayout()
+        left_panel.addWidget(QLabel('Tracked Products'))
+        self.table = QTableWidget(0, 5)
+        self.table.setHorizontalHeaderLabels(['Name', 'Symbol', 'Type', 'Price', 'Updated'])
         self.table.horizontalHeader().setStretchLastSection(True)
         self.table.itemSelectionChanged.connect(self.show_selected_product_detail)
+        left_panel.addWidget(self.table)
 
-        self.detail_label = QLabel('Product Detail: select a product to view details')
+        right_panel = QVBoxLayout()
+        right_panel.addWidget(QLabel('Product Detail'))
+
+        detail_card = QFrame()
+        detail_card.setFrameShape(QFrame.StyledPanel)
+        detail_layout = QGridLayout(detail_card)
+        self.name_value = QLabel('-')
+        self.symbol_value = QLabel('-')
+        self.type_value = QLabel('-')
+        self.source_value = QLabel('-')
+        self.currency_value = QLabel('-')
+        self.price_value = QLabel('-')
+        self.updated_value = QLabel('-')
+        self.note_value = QLabel('-')
+
+        detail_layout.addWidget(QLabel('Name'), 0, 0)
+        detail_layout.addWidget(self.name_value, 0, 1)
+        detail_layout.addWidget(QLabel('Symbol'), 1, 0)
+        detail_layout.addWidget(self.symbol_value, 1, 1)
+        detail_layout.addWidget(QLabel('Type'), 2, 0)
+        detail_layout.addWidget(self.type_value, 2, 1)
+        detail_layout.addWidget(QLabel('Source'), 3, 0)
+        detail_layout.addWidget(self.source_value, 3, 1)
+        detail_layout.addWidget(QLabel('Currency'), 4, 0)
+        detail_layout.addWidget(self.currency_value, 4, 1)
+        detail_layout.addWidget(QLabel('Current Price'), 5, 0)
+        detail_layout.addWidget(self.price_value, 5, 1)
+        detail_layout.addWidget(QLabel('Updated'), 6, 0)
+        detail_layout.addWidget(self.updated_value, 6, 1)
+        detail_layout.addWidget(QLabel('Note'), 7, 0)
+        detail_layout.addWidget(self.note_value, 7, 1)
+
         self.history_label = QLabel('Trend Preview: no data yet')
         self.status_label = QLabel('')
         self.chart_widget = PriceChartWidget(self)
 
-        layout.addLayout(top_bar)
-        layout.addWidget(self.table)
-        layout.addWidget(self.detail_label)
-        layout.addWidget(self.history_label)
-        layout.addWidget(self.status_label)
-        layout.addWidget(self.chart_widget)
+        right_panel.addWidget(detail_card)
+        right_panel.addWidget(self.history_label)
+        right_panel.addWidget(self.status_label)
+        right_panel.addWidget(self.chart_widget)
+
+        content_layout.addLayout(left_panel, 5)
+        content_layout.addLayout(right_panel, 4)
+
+        root_layout.addLayout(header_layout)
+        root_layout.addLayout(content_layout)
 
         self.refresh_table()
 
@@ -64,11 +106,8 @@ class ProductsPage(QWidget):
             self.table.setItem(row, 0, QTableWidgetItem(product.name))
             self.table.setItem(row, 1, QTableWidgetItem(product.symbol))
             self.table.setItem(row, 2, QTableWidgetItem(product.asset_type))
-            self.table.setItem(row, 3, QTableWidgetItem(product.source))
-            self.table.setItem(row, 4, QTableWidgetItem(product.currency))
-            self.table.setItem(row, 5, QTableWidgetItem(f"{product.current_price:.2f}"))
-            self.table.setItem(row, 6, QTableWidgetItem(product.last_updated))
-            self.table.setItem(row, 7, QTableWidgetItem(product.note))
+            self.table.setItem(row, 3, QTableWidgetItem(f"{product.current_price:.2f}"))
+            self.table.setItem(row, 4, QTableWidgetItem(product.last_updated))
             self.table.item(row, 0).setData(256, product.id)
 
     def refresh_prices(self):
@@ -76,8 +115,7 @@ class ProductsPage(QWidget):
         self.refresh_table()
         self.show_selected_product_detail()
         if results:
-            latest_message = results[-1]['message']
-            self.status_label.setText(f"Refresh result: {latest_message}")
+            self.status_label.setText(f"Refresh result: {results[-1]['message']}")
         else:
             self.status_label.setText('Refresh result: no products to refresh')
         if self.on_data_changed:
@@ -86,25 +124,43 @@ class ProductsPage(QWidget):
     def show_selected_product_detail(self):
         items = self.table.selectedItems()
         if not items:
-            self.detail_label.setText('Product Detail: select a product to view details')
-            self.history_label.setText('Trend Preview: no data yet')
-            self.chart_widget.plot_prices([])
+            self._clear_detail()
             return
         row = items[0].row()
         product_id = self.table.item(row, 0).data(256)
         product = self.service.get_product(product_id)
         if not product:
+            self._clear_detail()
             return
-        self.detail_label.setText(
-            f"Product Detail | Name: {product.name} | Symbol: {product.symbol} | Type: {product.asset_type} | Price: {product.current_price:.2f} {product.currency} | Updated: {product.last_updated}"
-        )
-        history = self.market_service.get_price_history(product_id, limit=8)
+
+        self.name_value.setText(product.name)
+        self.symbol_value.setText(product.symbol)
+        self.type_value.setText(product.asset_type)
+        self.source_value.setText(product.source)
+        self.currency_value.setText(product.currency)
+        self.price_value.setText(f"{product.current_price:.2f}")
+        self.updated_value.setText(product.last_updated)
+        self.note_value.setText(product.note or '-')
+
+        history = self.market_service.get_price_history(product_id, limit=12)
         if history:
             trend = ' -> '.join(f"{price:.2f}" for price, _ts in history)
             self.history_label.setText(f"Trend Preview: {trend}")
         else:
             self.history_label.setText('Trend Preview: no data yet')
         self.chart_widget.plot_prices(history)
+
+    def _clear_detail(self):
+        self.name_value.setText('-')
+        self.symbol_value.setText('-')
+        self.type_value.setText('-')
+        self.source_value.setText('-')
+        self.currency_value.setText('-')
+        self.price_value.setText('-')
+        self.updated_value.setText('-')
+        self.note_value.setText('-')
+        self.history_label.setText('Trend Preview: no data yet')
+        self.chart_widget.plot_prices([])
 
     def open_add_dialog(self):
         dialog = AddProductDialog(self)

@@ -1,7 +1,7 @@
 ﻿# Project Progress Snapshot
 
 ## Current Stage
-Interactive desktop prototype with one-year monthly trend support
+Interactive desktop prototype with product-oriented detail layout
 
 ## Completed
 - Project repository initialized
@@ -22,22 +22,23 @@ Interactive desktop prototype with one-year monthly trend support
 - Settings-driven provider configuration v1 implemented
 - Provider feedback v1 implemented
 - One-year monthly trend v1 implemented
-  - yearly monthly history fetch
-  - replace local history with 12-month monthly data
-  - chart updated to show last 12 months
+- Products layout v1 implemented
+  - product list panel
+  - structured detail card
+  - clearer chart area
 
 ## In Progress / Next
 - validate yahoo historical data in-app
 - add time range switching
-- richer product detail layout
-- dashboard charts
-- per-symbol validation and error display
+- improve dashboard layout
+- add per-symbol error states
+- UI polish
 
 ## MVP Status Estimate
 - Documentation: 90%
 - Architecture: 88%
-- UI skeleton: 83%
+- UI skeleton: 87%
 - Core CRUD/data flow: 84%
 - Financial analytics: 60%
 - Market data integration: 65%
-- Overall MVP progress: ~85%
+- Overall MVP progress: ~88%
