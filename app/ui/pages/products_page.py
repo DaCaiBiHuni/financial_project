@@ -29,14 +29,17 @@ class ProductsPage(QWidget):
         header_layout = QHBoxLayout()
         title = QLabel('Products')
         self.provider_label = QLabel(f"Provider: {self.market_service.get_provider_name()}")
-        self.refresh_button = QPushButton('Refresh Prices')
-        self.refresh_button.clicked.connect(self.refresh_prices)
+        self.refresh_price_button = QPushButton('Refresh Prices')
+        self.refresh_price_button.clicked.connect(self.refresh_prices)
+        self.refresh_trend_button = QPushButton('Refresh 1Y Trend')
+        self.refresh_trend_button.clicked.connect(self.refresh_trends)
         self.add_button = QPushButton('Add Product')
         self.add_button.clicked.connect(self.open_add_dialog)
         header_layout.addWidget(title)
         header_layout.addWidget(self.provider_label)
         header_layout.addStretch()
-        header_layout.addWidget(self.refresh_button)
+        header_layout.addWidget(self.refresh_price_button)
+        header_layout.addWidget(self.refresh_trend_button)
         header_layout.addWidget(self.add_button)
 
         content_layout = QHBoxLayout()
@@ -115,15 +118,27 @@ class ProductsPage(QWidget):
         self.refresh_table()
         self.show_selected_product_detail()
         if not results:
-            self.status_label.setText('Refresh result: no products to refresh')
+            self.status_label.setText('Price refresh: no products to refresh')
         else:
             failed = [r for r in results if not r.get('ok')]
             if failed:
-                self.status_label.setText(f"Refresh failed: {failed[-1]['message']}")
+                self.status_label.setText(f"Price refresh failed: {failed[-1]['message']}")
             else:
-                self.status_label.setText(f"Refresh success: {results[-1]['message']}")
+                self.status_label.setText(f"Price refresh success: {results[-1]['message']}")
         if self.on_data_changed:
             self.on_data_changed()
+
+    def refresh_trends(self):
+        results = self.market_service.refresh_all_histories()
+        self.show_selected_product_detail()
+        if not results:
+            self.status_label.setText('Trend refresh: no products to refresh')
+        else:
+            failed = [r for r in results if not r.get('ok')]
+            if failed:
+                self.status_label.setText(f"Trend refresh failed: {failed[-1]['message']}")
+            else:
+                self.status_label.setText(f"Trend refresh success: {results[-1]['message']}")
 
     def show_selected_product_detail(self):
         items = self.table.selectedItems()

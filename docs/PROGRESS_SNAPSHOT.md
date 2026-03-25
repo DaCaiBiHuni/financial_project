@@ -1,7 +1,7 @@
 ﻿# Project Progress Snapshot
 
 ## Current Stage
-Interactive desktop prototype with Alpha Vantage provider option
+Interactive desktop prototype with split refresh actions for price and trend
 
 ## Completed
 - Project repository initialized
@@ -25,22 +25,23 @@ Interactive desktop prototype with Alpha Vantage provider option
 - Products layout v1 implemented
 - Strict refresh logic v1 implemented
 - Alpha Vantage provider option added
-  - provider skeleton
-  - settings option
-  - market service routing
+- Split refresh actions v1 implemented
+  - current price refresh separated
+  - 1-year trend refresh separated
+  - status text distinguishes price vs trend failures
 
 ## In Progress / Next
-- configure ALPHAVANTAGE_API_KEY
-- validate NVDA current price and 1y monthly history via Alpha Vantage
-- add clearer provider-specific error messages
+- validate Alpha Vantage current price in-app
+- validate Alpha Vantage monthly history with throttling
 - add time range switching
 - improve dashboard layout
+- add per-symbol validation states
 
 ## MVP Status Estimate
 - Documentation: 90%
 - Architecture: 90%
-- UI skeleton: 87%
-- Core CRUD/data flow: 86%
+- UI skeleton: 88%
+- Core CRUD/data flow: 88%
 - Financial analytics: 60%
-- Market data integration: 75%
-- Overall MVP progress: ~90%
+- Market data integration: 80%
+- Overall MVP progress: ~92%

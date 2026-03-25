@@ -33,33 +33,16 @@ class MarketService:
             return {'ok': False, 'message': 'Product not found', 'provider': self.provider_name}
 
         now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-
-        if self.provider_name == 'mock':
-            price = self.provider.get_current_price(product.symbol)
-            history = self.provider.get_yearly_monthly_history(product.symbol)
-            self.repo.update_price(product_id, price, now)
-            self.history_repo.replace_yearly_history(product_id, history)
-            return {
-                'ok': True,
-                'product_id': product_id,
-                'symbol': product.symbol,
-                'price': price,
-                'provider': 'mock',
-                'message': f'{product.symbol} refreshed via mock provider',
-            }
-
         try:
             price = self.provider.get_current_price(product.symbol)
-            history = self.provider.get_yearly_monthly_history(product.symbol)
             self.repo.update_price(product_id, price, now)
-            self.history_repo.replace_yearly_history(product_id, history)
             return {
                 'ok': True,
                 'product_id': product_id,
                 'symbol': product.symbol,
                 'price': price,
                 'provider': self.provider_name,
-                'message': f'{product.symbol} refreshed via {self.provider_name}',
+                'message': f'{product.symbol} current price refreshed via {self.provider_name}',
             }
         except Exception as exc:
             return {
@@ -67,13 +50,41 @@ class MarketService:
                 'product_id': product_id,
                 'symbol': product.symbol,
                 'provider': self.provider_name,
-                'message': f'{product.symbol} refresh failed on {self.provider_name}: {exc}',
+                'message': f'{product.symbol} current price refresh failed on {self.provider_name}: {exc}',
+            }
+
+    def refresh_product_history(self, product_id: int):
+        product = self.repo.get_product(product_id)
+        if not product:
+            return {'ok': False, 'message': 'Product not found', 'provider': self.provider_name}
+        try:
+            history = self.provider.get_yearly_monthly_history(product.symbol)
+            self.history_repo.replace_yearly_history(product_id, history)
+            return {
+                'ok': True,
+                'product_id': product_id,
+                'symbol': product.symbol,
+                'provider': self.provider_name,
+                'message': f'{product.symbol} 1y monthly trend refreshed via {self.provider_name}',
+            }
+        except Exception as exc:
+            return {
+                'ok': False,
+                'product_id': product_id,
+                'symbol': product.symbol,
+                'provider': self.provider_name,
+                'message': f'{product.symbol} trend refresh failed on {self.provider_name}: {exc}',
             }
 
     def refresh_all_prices(self):
         self.reload_provider()
         products = self.repo.list_products()
         return [self.refresh_product_price(product.id) for product in products]
+
+    def refresh_all_histories(self):
+        self.reload_provider()
+        products = self.repo.list_products()
+        return [self.refresh_product_history(product.id) for product in products]
 
     def get_price_history(self, product_id: int, limit: int = 12):
         return self.history_repo.get_price_history(product_id, limit)
