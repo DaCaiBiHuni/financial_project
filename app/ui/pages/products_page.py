@@ -99,7 +99,7 @@ class ProductsPage(QWidget):
 
         splitter.addWidget(top_container)
         splitter.addWidget(bottom_container)
-        splitter.setSizes([320, 420])
+        splitter.setSizes([260, 520])
 
         root_layout.addLayout(header_layout)
         root_layout.addWidget(splitter)
@@ -197,3 +197,4 @@ class ProductsPage(QWidget):
             self.refresh_table()
             if self.on_data_changed:
                 self.on_data_changed()
+
