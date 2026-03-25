@@ -1,7 +1,7 @@
 ﻿# Project Progress Snapshot
 
 ## Current Stage
-Interactive desktop prototype with split refresh actions for price and trend
+Interactive desktop prototype with recommended product entry flow
 
 ## Completed
 - Project repository initialized
@@ -26,9 +26,9 @@ Interactive desktop prototype with split refresh actions for price and trend
 - Strict refresh logic v1 implemented
 - Alpha Vantage provider option added
 - Split refresh actions v1 implemented
-  - current price refresh separated
-  - 1-year trend refresh separated
-  - status text distinguishes price vs trend failures
+- Recommended product entries v1 implemented
+  - quick add buttons in Add Product dialog
+  - duplicate prevention by symbol
 
 ## In Progress / Next
 - validate Alpha Vantage current price in-app
@@ -40,8 +40,8 @@ Interactive desktop prototype with split refresh actions for price and trend
 ## MVP Status Estimate
 - Documentation: 90%
 - Architecture: 90%
-- UI skeleton: 88%
-- Core CRUD/data flow: 88%
+- UI skeleton: 89%
+- Core CRUD/data flow: 90%
 - Financial analytics: 60%
 - Market data integration: 80%
-- Overall MVP progress: ~92%
+- Overall MVP progress: ~93%

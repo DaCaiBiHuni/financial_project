@@ -1,4 +1,5 @@
-﻿from app.infrastructure.db.database import get_connection
+﻿from app.domain.models.product import Product
+from app.infrastructure.db.database import get_connection
 
 
 class ProductRepository:
@@ -29,7 +30,6 @@ class ProductRepository:
         cur.execute('SELECT id, name, symbol, asset_type, source, currency, current_price, last_updated, note FROM products ORDER BY id DESC')
         rows = cur.fetchall()
         conn.close()
-        from app.domain.models.product import Product
         return [
             Product(
                 id=row[0],
@@ -56,7 +56,29 @@ class ProductRepository:
         conn.close()
         if not row:
             return None
-        from app.domain.models.product import Product
+        return Product(
+            id=row[0],
+            name=row[1],
+            symbol=row[2],
+            asset_type=row[3],
+            source=row[4],
+            currency=row[5],
+            current_price=row[6] or 0.0,
+            last_updated=row[7] or '',
+            note=row[8] or '',
+        )
+
+    def get_by_symbol(self, symbol: str):
+        conn = get_connection()
+        cur = conn.cursor()
+        cur.execute(
+            'SELECT id, name, symbol, asset_type, source, currency, current_price, last_updated, note FROM products WHERE UPPER(symbol) = UPPER(?)',
+            (symbol,),
+        )
+        row = cur.fetchone()
+        conn.close()
+        if not row:
+            return None
         return Product(
             id=row[0],
             name=row[1],
