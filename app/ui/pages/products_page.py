@@ -26,11 +26,13 @@ class ProductsPage(QWidget):
 
         top_bar = QHBoxLayout()
         title = QLabel('Products')
+        self.provider_label = QLabel(f"Provider: {self.market_service.get_provider_name()}")
         self.add_button = QPushButton('Add Product')
         self.add_button.clicked.connect(self.open_add_dialog)
         self.refresh_button = QPushButton('Refresh Prices')
         self.refresh_button.clicked.connect(self.refresh_prices)
         top_bar.addWidget(title)
+        top_bar.addWidget(self.provider_label)
         top_bar.addStretch()
         top_bar.addWidget(self.refresh_button)
         top_bar.addWidget(self.add_button)
@@ -42,17 +44,20 @@ class ProductsPage(QWidget):
 
         self.detail_label = QLabel('Product Detail: select a product to view details')
         self.history_label = QLabel('Trend Preview: no data yet')
+        self.status_label = QLabel('')
         self.chart_widget = PriceChartWidget(self)
 
         layout.addLayout(top_bar)
         layout.addWidget(self.table)
         layout.addWidget(self.detail_label)
         layout.addWidget(self.history_label)
+        layout.addWidget(self.status_label)
         layout.addWidget(self.chart_widget)
 
         self.refresh_table()
 
     def refresh_table(self):
+        self.provider_label.setText(f"Provider: {self.market_service.get_provider_name()}")
         products = self.service.get_all_products()
         self.table.setRowCount(len(products))
         for row, product in enumerate(products):
@@ -67,9 +72,14 @@ class ProductsPage(QWidget):
             self.table.item(row, 0).setData(256, product.id)
 
     def refresh_prices(self):
-        self.market_service.refresh_all_prices()
+        results = self.market_service.refresh_all_prices()
         self.refresh_table()
         self.show_selected_product_detail()
+        if results:
+            latest_message = results[-1]['message']
+            self.status_label.setText(f"Refresh result: {latest_message}")
+        else:
+            self.status_label.setText('Refresh result: no products to refresh')
         if self.on_data_changed:
             self.on_data_changed()
 

@@ -1,7 +1,7 @@
 ﻿# Project Progress Snapshot
 
 ## Current Stage
-Interactive desktop prototype with configurable market provider settings
+Interactive desktop prototype with provider status and refresh feedback
 
 ## Completed
 - Project repository initialized
@@ -20,14 +20,14 @@ Interactive desktop prototype with configurable market provider settings
 - Trend chart v1 implemented
 - Real data provider architecture v1 implemented
 - Settings-driven provider configuration v1 implemented
-  - settings table
-  - settings repository/service
-  - UI provider selection
-  - market service reload based on settings
+- Provider feedback v1 implemented
+  - current provider shown in UI
+  - refresh result message shown in products page
+  - fallback behavior surfaced in status text
 
 ## In Progress / Next
-- validate yahoo provider with real symbols in-app
-- improve error state messaging
+- validate yahoo symbols in-app
+- show clearer error states per product
 - add time range filtering
 - richer product detail layout
 - dashboard charts
@@ -35,8 +35,8 @@ Interactive desktop prototype with configurable market provider settings
 ## MVP Status Estimate
 - Documentation: 90%
 - Architecture: 86%
-- UI skeleton: 80%
-- Core CRUD/data flow: 80%
+- UI skeleton: 82%
+- Core CRUD/data flow: 82%
 - Financial analytics: 60%
-- Market data integration: 52%
-- Overall MVP progress: ~79%
+- Market data integration: 58%
+- Overall MVP progress: ~82%

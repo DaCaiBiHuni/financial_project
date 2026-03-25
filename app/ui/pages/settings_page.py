@@ -20,7 +20,7 @@ class SettingsPage(QWidget):
             self.provider_combo.setCurrentIndex(idx)
 
         self.save_button = QPushButton('Save Settings')
-        self.status_label = QLabel('')
+        self.status_label = QLabel(f'Current provider: {current}')
         self.save_button.clicked.connect(self.save_settings)
 
         layout.addWidget(self.provider_combo)
