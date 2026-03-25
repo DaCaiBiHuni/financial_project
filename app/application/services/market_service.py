@@ -1,6 +1,6 @@
 ﻿from datetime import datetime
 
-from app.infrastructure.config.settings import MARKET_PROVIDER
+from app.application.services.settings_service import SettingsService
 from app.infrastructure.providers.mock_provider import MockMarketProvider
 from app.infrastructure.providers.yahoo_provider import YahooMarketProvider
 from app.infrastructure.db.repositories.product_repository import ProductRepository
@@ -9,14 +9,19 @@ from app.infrastructure.db.repositories.price_history_repository import PriceHis
 
 class MarketService:
     def __init__(self):
+        self.settings_service = SettingsService()
         self.provider = self._build_provider()
         self.repo = ProductRepository()
         self.history_repo = PriceHistoryRepository()
 
     def _build_provider(self):
-        if MARKET_PROVIDER == 'yahoo':
+        provider_name = self.settings_service.get_market_provider()
+        if provider_name == 'yahoo':
             return YahooMarketProvider()
         return MockMarketProvider()
+
+    def reload_provider(self):
+        self.provider = self._build_provider()
 
     def refresh_product_price(self, product_id: int):
         product = self.repo.get_product(product_id)
@@ -33,6 +38,7 @@ class MarketService:
         return price
 
     def refresh_all_prices(self):
+        self.reload_provider()
         products = self.repo.list_products()
         for product in products:
             self.refresh_product_price(product.id)
