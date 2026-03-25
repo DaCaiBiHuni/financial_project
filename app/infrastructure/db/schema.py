@@ -1,4 +1,5 @@
-﻿from app.infrastructure.db.database import get_connection
+﻿from datetime import datetime
+from app.infrastructure.db.database import get_connection
 
 
 def init_database():
@@ -13,10 +14,19 @@ def init_database():
             asset_type TEXT NOT NULL,
             source TEXT NOT NULL,
             currency TEXT NOT NULL,
+            current_price REAL NOT NULL DEFAULT 0,
+            last_updated TEXT DEFAULT '',
             note TEXT DEFAULT ''
         )
         '''
     )
+
+    columns = [row[1] for row in cur.execute("PRAGMA table_info(products)").fetchall()]
+    if 'current_price' not in columns:
+        cur.execute("ALTER TABLE products ADD COLUMN current_price REAL NOT NULL DEFAULT 0")
+    if 'last_updated' not in columns:
+        cur.execute("ALTER TABLE products ADD COLUMN last_updated TEXT DEFAULT ''")
+
     cur.execute(
         '''
         CREATE TABLE IF NOT EXISTS portfolio_positions (

@@ -29,12 +29,16 @@ class ProductsPage(QWidget):
         top_bar.addStretch()
         top_bar.addWidget(self.add_button)
 
-        self.table = QTableWidget(0, 6)
-        self.table.setHorizontalHeaderLabels(['Name', 'Symbol', 'Type', 'Source', 'Currency', 'Note'])
+        self.table = QTableWidget(0, 8)
+        self.table.setHorizontalHeaderLabels(['Name', 'Symbol', 'Type', 'Source', 'Currency', 'Price', 'Updated', 'Note'])
         self.table.horizontalHeader().setStretchLastSection(True)
+        self.table.itemSelectionChanged.connect(self.show_selected_product_detail)
+
+        self.detail_label = QLabel('Product Detail: select a product to view details')
 
         layout.addLayout(top_bar)
         layout.addWidget(self.table)
+        layout.addWidget(self.detail_label)
 
         self.refresh_table()
 
@@ -47,7 +51,24 @@ class ProductsPage(QWidget):
             self.table.setItem(row, 2, QTableWidgetItem(product.asset_type))
             self.table.setItem(row, 3, QTableWidgetItem(product.source))
             self.table.setItem(row, 4, QTableWidgetItem(product.currency))
-            self.table.setItem(row, 5, QTableWidgetItem(product.note))
+            self.table.setItem(row, 5, QTableWidgetItem(f"{product.current_price:.2f}"))
+            self.table.setItem(row, 6, QTableWidgetItem(product.last_updated))
+            self.table.setItem(row, 7, QTableWidgetItem(product.note))
+            self.table.item(row, 0).setData(256, product.id)
+
+    def show_selected_product_detail(self):
+        items = self.table.selectedItems()
+        if not items:
+            self.detail_label.setText('Product Detail: select a product to view details')
+            return
+        row = items[0].row()
+        product_id = self.table.item(row, 0).data(256)
+        product = self.service.get_product(product_id)
+        if not product:
+            return
+        self.detail_label.setText(
+            f"Product Detail | Name: {product.name} | Symbol: {product.symbol} | Type: {product.asset_type} | Price: {product.current_price:.2f} {product.currency} | Updated: {product.last_updated}"
+        )
 
     def open_add_dialog(self):
         dialog = AddProductDialog(self)

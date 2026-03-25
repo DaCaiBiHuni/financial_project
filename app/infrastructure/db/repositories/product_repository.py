@@ -1,4 +1,6 @@
-﻿from app.domain.models.product import Product
+﻿from datetime import datetime
+
+from app.domain.models.product import Product
 from app.infrastructure.db.database import get_connection
 
 
@@ -7,8 +9,17 @@ class ProductRepository:
         conn = get_connection()
         cur = conn.cursor()
         cur.execute(
-            'INSERT INTO products (name, symbol, asset_type, source, currency, note) VALUES (?, ?, ?, ?, ?, ?)',
-            (product.name, product.symbol, product.asset_type, product.source, product.currency, product.note),
+            'INSERT INTO products (name, symbol, asset_type, source, currency, current_price, last_updated, note) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+            (
+                product.name,
+                product.symbol,
+                product.asset_type,
+                product.source,
+                product.currency,
+                product.current_price,
+                product.last_updated,
+                product.note,
+            ),
         )
         conn.commit()
         product_id = cur.lastrowid
@@ -18,7 +29,7 @@ class ProductRepository:
     def list_products(self) -> list[Product]:
         conn = get_connection()
         cur = conn.cursor()
-        cur.execute('SELECT id, name, symbol, asset_type, source, currency, note FROM products ORDER BY id DESC')
+        cur.execute('SELECT id, name, symbol, asset_type, source, currency, current_price, last_updated, note FROM products ORDER BY id DESC')
         rows = cur.fetchall()
         conn.close()
         return [
@@ -29,7 +40,32 @@ class ProductRepository:
                 asset_type=row[3],
                 source=row[4],
                 currency=row[5],
-                note=row[6] or '',
+                current_price=row[6] or 0.0,
+                last_updated=row[7] or '',
+                note=row[8] or '',
             )
             for row in rows
         ]
+
+    def get_product(self, product_id: int) -> Product | None:
+        conn = get_connection()
+        cur = conn.cursor()
+        cur.execute(
+            'SELECT id, name, symbol, asset_type, source, currency, current_price, last_updated, note FROM products WHERE id = ?',
+            (product_id,),
+        )
+        row = cur.fetchone()
+        conn.close()
+        if not row:
+            return None
+        return Product(
+            id=row[0],
+            name=row[1],
+            symbol=row[2],
+            asset_type=row[3],
+            source=row[4],
+            currency=row[5],
+            current_price=row[6] or 0.0,
+            last_updated=row[7] or '',
+            note=row[8] or '',
+        )

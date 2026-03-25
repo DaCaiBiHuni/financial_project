@@ -10,4 +10,6 @@ class Product:
     asset_type: str
     source: str
     currency: str
+    current_price: float = 0.0
+    last_updated: str = ''
     note: str = ''
